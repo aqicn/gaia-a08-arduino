@@ -1,0 +1,27 @@
+name: Compile Sketches
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  compile-sketches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # See: https://github.com/arduino/compile-sketches#readme
+      - name: Compile sketches
+        uses: arduino/compile-sketches@v1
+        with:
+          fqbn: esp32:esp32:esp32c3
+          sketch-paths: |
+            - .
+          libraries: |
+            - name: AHT20
+            - name: WS2812FX
+            - name: ArduinoJson
+            - name: PMS_Library
+            - name: TaskScheduler
