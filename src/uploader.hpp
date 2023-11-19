@@ -100,7 +100,7 @@ void uploaderWorker()
 
     HTTPClient http;
     http.setUserAgent("GAIA-uploader/1.0");
-    http.begin("http://192.168.1.214:88/sensor/upload");
+    http.begin("https://aqicn.org/sensor/upload");
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(json_body);
 
