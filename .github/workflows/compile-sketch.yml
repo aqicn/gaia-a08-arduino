@@ -16,7 +16,8 @@ jobs:
       - name: Compile sketches
         uses: arduino/compile-sketches@v1
         with:
-          cli-compile-flags: -Wno-unused-function
+          cli-compile-flags: | 
+            - -Wno-unused-function
           fqbn: esp32:esp32:esp32c3
           sketch-paths: |
             - .
