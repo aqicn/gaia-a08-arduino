@@ -16,8 +16,11 @@ jobs:
       - name: Compile sketches
         uses: arduino/compile-sketches@v1
         with:
-          cli-compile-flags: |
-            - --warnings="all"
+          cli-compile-flags: | 
+            - "--build-property"
+            - "compiler.cpp.extra_flags=-Werror"
+            - "--build-property"
+            - "compiler.cpp.extra_flags=-Wno-unused-function"
 
           fqbn: esp32:esp32:esp32c3
           sketch-paths: |
