@@ -53,6 +53,7 @@ To see you station, you first need to enter the token you previously got from th
 
 ## Todo
 
+  - [X] Add support for green LED breathing
   - [ ] Add support for CO2 sensor
   - [ ] Add support for Dual PMS configuration
   - [ ] Add support for platform IO

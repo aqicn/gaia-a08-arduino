@@ -43,6 +43,7 @@
 #include "src/met.hpp"
 #include "src/pms.hpp"
 #include "src/rgb.hpp"
+#include "src/led.hpp"
 #include "src/uploader.hpp"
 
 // -----------------------
@@ -54,19 +55,18 @@ void setup()
     Serial.begin(115200);
     Serial.println("starting...");
 
-    pinMode(GPIO_GREEN_LED, OUTPUT);
-    digitalWrite(GPIO_GREEN_LED, LOW);
-
     metSensorInit(runner);
     pmsSensorInit(runner);
     rgbLedInit(runner);
     wifiInit(runner);
+    ledInit(runner);
 
     uploaderInit(runner);
 }
 
 void loop()
 {
+    ledLoop();
     rgbLedLoop();
     runner.execute();
 }
