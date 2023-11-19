@@ -23,5 +23,5 @@ jobs:
             - name: AHT20
             - name: WS2812FX
             - name: ArduinoJson
-            - name: PMS_Library
+            - name: PMS Library
             - name: TaskScheduler
