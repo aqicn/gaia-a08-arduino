@@ -66,6 +66,13 @@ bool uploaderGetStatus(DynamicJsonDocument &doc)
     doc["readings"][4]["value"] = humidity.avg();
     doc["readings"][4]["unit"] = "%";
 
+    if (co2.hasData())
+    {
+        doc["readings"][4]["specie"] = "co2";
+        doc["readings"][4]["value"] = humidity.avg();
+        doc["readings"][4]["unit"] = "ppm";
+    }
+
     doc["token"] = TOKEN;
 
     pm10.reset();
@@ -73,6 +80,7 @@ bool uploaderGetStatus(DynamicJsonDocument &doc)
     pm1.reset();
     temperature.reset();
     humidity.reset();
+    co2.reset();
     return true;
 }
 

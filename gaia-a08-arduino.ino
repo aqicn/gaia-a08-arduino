@@ -44,6 +44,7 @@
 #include "src/pms.hpp"
 #include "src/rgb.hpp"
 #include "src/led.hpp"
+#include "src/scd4x.hpp"
 #include "src/uploader.hpp"
 
 // -----------------------
@@ -60,6 +61,7 @@ void setup()
     rgbLedInit(runner);
     wifiInit(runner);
     ledInit(runner);
+    scd4xSensorInit(runner);
 
     uploaderInit(runner);
 }
