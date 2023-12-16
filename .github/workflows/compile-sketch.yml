@@ -3,6 +3,7 @@ name: Compile Sketches
 on:
   - push
   - pull_request
+  - workflow_dispatch
 
 jobs:
   compile-sketches:
