@@ -18,12 +18,9 @@ jobs:
         uses: arduino/compile-sketches@v1
         with:
           cli-compile-flags: |
-            - "--build-property"
-            - "compiler.cpp.extra_flags=-Werror"
-            - "--build-property"
-            - "compiler.cpp.extra_flags=-Wno-unused-function"
+            - --warnings="all"
 
-          fqbn: esp32:esp32:esp32c3
+          fqbn: esp32:esp32:esp32c3m1IKit
           sketch-paths: |
             - .
           libraries: |
