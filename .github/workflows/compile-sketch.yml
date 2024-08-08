@@ -19,7 +19,7 @@ jobs:
           cli-compile-flags: |
             - --warnings="all"
 
-          fqbn: esp32:esp32:esp32c3
+          fqbn: esp32:esp32:esp32c3m1IKit
           sketch-paths: |
             - .
           libraries: |
