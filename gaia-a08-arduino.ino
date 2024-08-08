@@ -32,7 +32,9 @@
 #define GPIO_PMS1_RX 4
 #define GPIO_PMS2_RX 7
 
+#ifndef Serial
 #define Serial USBSerial
+#endif
 
 // -----------------------
 
