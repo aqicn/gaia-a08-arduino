@@ -25,7 +25,7 @@ void uploaderInit(Scheduler &runner)
     uploaderTask.enable();
 }
 
-bool uploaderGetStatus(DynamicJsonDocument &doc)
+bool uploaderGetCurrentStatus(DynamicJsonDocument &doc)
 {
     if (!pm25.hasData())
     {
@@ -74,14 +74,17 @@ bool uploaderGetStatus(DynamicJsonDocument &doc)
     }
 
     doc["token"] = TOKEN;
+    return true;
+}
 
+void uploaderResetCurrentStatus()
+{
     pm10.reset();
     pm25.reset();
     pm1.reset();
     temperature.reset();
     humidity.reset();
     co2.reset();
-    return true;
 }
 
 void uploaderWorker()
@@ -94,10 +97,11 @@ void uploaderWorker()
     }
 
     DynamicJsonDocument doc(1024 * 8);
-    if (!uploaderGetStatus(doc))
+    if (!uploaderGetCurrentStatus(doc))
     {
         return;
     }
+    uploaderResetCurrentStatus();
 
     Serial.print("Posting: ");
     serializeJson(doc, Serial);

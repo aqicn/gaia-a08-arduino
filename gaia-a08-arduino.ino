@@ -46,6 +46,7 @@
 #include "src/led.hpp"
 #include "src/scd4x.hpp"
 #include "src/uploader.hpp"
+#include "src/webserver.hpp"
 
 // -----------------------
 
@@ -64,6 +65,7 @@ void setup()
     scd4xSensorInit(runner);
 
     uploaderInit(runner);
+    webServerInit(runner);
 }
 
 void loop()

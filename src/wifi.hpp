@@ -30,5 +30,8 @@ void wifiInit(Scheduler &runner)
         Serial.println("Connecting to WiFi..");
     }
 
-    Serial.println("Connected to the WiFi network");
+    Serial.print("Connected to the WiFi network with IP address: ");
+
+    IPAddress ip = WiFi.localIP();
+    Serial.println(ip);
 }
