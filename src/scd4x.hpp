@@ -23,6 +23,7 @@ SensirionI2CScd4x scd4x;
 void scd4xSensorWorker();
 Task scd4xTask(1000, TASK_FOREVER, &scd4xSensorWorker);
 Accumulator<int> co2;
+int scd4xErrorCount = 0;
 
 void printUint16Hex(uint16_t value)
 {
@@ -52,10 +53,15 @@ void scd4xSensorInit(Scheduler &runner)
     error = scd4x.stopPeriodicMeasurement();
     if (error)
     {
-        Serial.print("Error trying to execute stopPeriodicMeasurement(): ");
-        errorToString(error, errorMessage, 256);
-        Serial.println(errorMessage);
+        if (++scd4xErrorCount <= 3)
+        {
+            Serial.print("SCD4x: Error trying to execute stopPeriodicMeasurement(): ");
+            errorToString(error, errorMessage, 256);
+            Serial.println(errorMessage);
+        }
+        return;
     }
+    scd4xErrorCount = 0;
 
     uint16_t serial0;
     uint16_t serial1;
@@ -63,7 +69,7 @@ void scd4xSensorInit(Scheduler &runner)
     error = scd4x.getSerialNumber(serial0, serial1, serial2);
     if (error)
     {
-        Serial.print("Error trying to execute getSerialNumber(): ");
+        Serial.print("SCD4x: Error trying to execute getSerialNumber(): ");
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
     }
@@ -76,12 +82,12 @@ void scd4xSensorInit(Scheduler &runner)
     error = scd4x.startPeriodicMeasurement();
     if (error)
     {
-        Serial.print("Error trying to execute startPeriodicMeasurement(): ");
+        Serial.print("SCD4x: Error trying to execute startPeriodicMeasurement(): ");
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
     }
 
-    Serial.println("Waiting for first measurement... (5 sec)");
+    Serial.println("SCD4x: Waiting for first measurement... (5 sec)");
     runner.addTask(scd4xTask);
     scd4xTask.enable();
 }
@@ -101,7 +107,7 @@ void scd4xSensorWorker()
     error = scd4x.getDataReadyFlag(isDataReady);
     if (error)
     {
-        Serial.print("Error trying to execute getDataReadyFlag(): ");
+        Serial.print("SCD4x: Error trying to execute getDataReadyFlag(): ");
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
         return;
@@ -113,13 +119,13 @@ void scd4xSensorWorker()
     error = scd4x.readMeasurement(co2_ppm, temperature, humidity);
     if (error)
     {
-        Serial.print("Error trying to execute readMeasurement(): ");
+        Serial.print("SCD4x: Error trying to execute readMeasurement(): ");
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
     }
     else if (co2_ppm == 0)
     {
-        Serial.println("Invalid sample detected, skipping.");
+        Serial.println("SCD4x: Invalid sample detected, skipping.");
     }
     else
     {
