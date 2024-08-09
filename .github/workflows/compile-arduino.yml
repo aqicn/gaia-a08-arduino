@@ -1,4 +1,4 @@
-name: Compile Sketches
+name: Arduino-CLI CI
 
 on:
   - push
