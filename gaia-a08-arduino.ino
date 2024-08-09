@@ -62,9 +62,10 @@ void setup()
     metSensorInit(runner);
     pmsSensorInit(runner);
     rgbLedInit(runner);
-    wifiInit(runner);
     ledInit(runner);
     scd4xSensorInit(runner);
+
+    wifiInit(runner);
 
     uploaderInit(runner);
     webServerInit(runner);

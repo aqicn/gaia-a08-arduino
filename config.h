@@ -16,11 +16,20 @@
  *
  */
 
+/*
+CONF_USE_WIFI_MANAGER: If defined, the device will use the WiFi manager
+to configure the connection to the WiFi access point.
+*/
+#define CONF_USE_WIFI_MANAGER
+
 // Get your own token from  https://aqicn.org/data-platform/token/
 #define TOKEN "dummy-token-for-test-purpose-only"
 
-#define WIFI_SSID "yourNetworkName"
-#define WIFI_PASS "yourNetworkPassword"
-
 #define LATITUDE 28.7501
 #define LONGITUDE 77.1177
+
+#ifndef CONF_USE_WIFI_MANAGER
+// Only needed if the WiFi manager is not used
+#define WIFI_SSID "yourNetworkName"
+#define WIFI_PASS "yourNetworkPassword"
+#endif

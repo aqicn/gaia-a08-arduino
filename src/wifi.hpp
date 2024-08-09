@@ -19,16 +19,26 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
+#ifdef CONF_USE_WIFI_MANAGER
+#include <WiFiManager.h>
+WiFiManager wifiManager;
+#endif
+
 void wifiInit(Scheduler &runner)
 {
+#ifdef CONF_USE_WIFI_MANAGER
+    wifiManager.autoConnect("GAIA-A08");
 
+#else
     WiFi.begin(WIFI_SSID, WIFI_PASS);
 
     while (WiFi.status() != WL_CONNECTED)
-    { // Check for the connection
+    {
+        // Check for the connection
         delay(1000);
-        Serial.println("Connecting to WiFi..");
+        Serial.println("Trying to connecting to WiFi..");
     }
+#endif
 
     Serial.print("Connected to the WiFi network with IP address: ");
 

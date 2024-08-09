@@ -111,7 +111,7 @@ void uploaderWorker()
     serializeJson(doc, json_body);
 
     HTTPClient http;
-    http.setUserAgent("GAIA-uploader/1.0");
+    http.setUserAgent("GAIA-uploader/1.1");
     http.begin("https://aqicn.org/sensor/upload");
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(json_body);

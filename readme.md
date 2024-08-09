@@ -65,6 +65,6 @@ the aqicn.org data-platform.
 - [x] Add support for CO2 sensor
 - [x] Add support for uploading CO2 sensor temperature and humidity
 - [x] Add support for embedded HTTP server
+- [x] Add support for Wifi Manager
 - [ ] Add support for Dual PMS configuration
 - [ ] Add support for platform IO
-- [ ] Add support for Wifi Manager
