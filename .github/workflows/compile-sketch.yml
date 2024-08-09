@@ -31,4 +31,4 @@ jobs:
             - name: TaskScheduler
             - name: jled
             - name: Sensirion I2C SCD4x
-            - name: ESPAsyncWebServer
+            - name: WiFiManager
