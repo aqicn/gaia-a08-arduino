@@ -3,7 +3,7 @@
 This repository is the open-source Arduino firmware used for the
 [GAIA A08](https://aqicn.org/gaia/a08/).
 
-![Arduino compilation](https://github.com/aqicn/gaia-a08-arduino/blob/main/.github/workflows/compile-arduino.yml/badge.svg)
+[![Arduino compilation](https://github.com/aqicn/gaia-a08-arduino/actions/workflows/compile-arduino.yml/badge.svg)](https://github.com/aqicn/gaia-a08-arduino/actions/workflows/compile-arduino.yml)
 
 ## Configuration
 
