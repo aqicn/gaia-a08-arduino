@@ -1,4 +1,5 @@
 
+#ifdef CONF_USE_WEB_SERVER
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 
@@ -31,3 +32,9 @@ void webServerInit(Scheduler &runner)
 
     server.begin();
 }
+
+#else
+void webServerInit(Scheduler &runner)
+{
+}
+#endif
