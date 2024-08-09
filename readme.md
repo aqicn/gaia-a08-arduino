@@ -67,7 +67,8 @@ you can just select `Arduino: Upload` from the command palette.
 ### Platform IO
 
 If you use platform IO, you can just use `make compile-platformio` to compile,
-upload, and start the monitor.
+upload, and start the monitor. Note that, by default, the `CONF_USE_WEB_SERVER`
+configuration flag is enabled by default for Platform IO.
 
 ## Running
 
