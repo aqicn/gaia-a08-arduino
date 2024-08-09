@@ -7,7 +7,7 @@ AsyncWebServer server(80);
 
 void webServerRealtimeHandler(AsyncWebServerRequest *request)
 {
-    DynamicJsonDocument doc(1024 * 8);
+    JsonDocument doc;
     if (!pm25.hasData())
     {
         request->send(200, "application/json", "{\"status\":\"error\",\"reason\":\"no PM2.5 data\"}");

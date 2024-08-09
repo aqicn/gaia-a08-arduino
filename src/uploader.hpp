@@ -25,7 +25,7 @@ void uploaderInit(Scheduler &runner)
     uploaderTask.enable();
 }
 
-bool uploaderGetCurrentStatus(DynamicJsonDocument &doc)
+bool uploaderGetCurrentStatus(JsonDocument &doc)
 {
     if (!pm25.hasData())
     {
@@ -96,7 +96,7 @@ void uploaderWorker()
         return;
     }
 
-    DynamicJsonDocument doc(1024 * 8);
+    JsonDocument doc;
     if (!uploaderGetCurrentStatus(doc))
     {
         return;
@@ -112,7 +112,8 @@ void uploaderWorker()
 
     HTTPClient http;
     http.setUserAgent("GAIA-uploader/1.1");
-    http.begin("https://aqicn.org/sensor/upload");
+    // http.begin("https://aqicn.org/sensor/upload");
+    http.begin("http://192.168.1.214:88/sensor/upload");
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(json_body);
 
