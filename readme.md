@@ -19,11 +19,11 @@ Data-Platform token and the station location:
 
 You can get your own token from https://aqicn.org/data-platform/token/
 
-By default, the device will use the (Wi-Fi
-Manager)[https://github.com/tzapu/WiFiManager] to connect to your Wi-Fi access
-point. If you want to configure a static Wi-Fi access point instead, comment out
-`CONF_USE_WIFI_MANAGER` and define `WIFI_SSID` and `WIFI_PASS` in the `config.h`
-file.
+By default, the device will use the
+[Wi-Fi Manager](https://github.com/tzapu/WiFiManager) to connect to your Wi-Fi
+access point. If you want to configure a static Wi-Fi access point instead,
+comment out `CONF_USE_WIFI_MANAGER` and define `WIFI_SSID` and `WIFI_PASS` in
+the `config.h` file.
 
 ```C
 //#define CONF_USE_WIFI_MANAGER
