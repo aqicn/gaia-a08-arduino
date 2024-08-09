@@ -7,20 +7,29 @@ This repository is the open-source Arduino firmware used for the
 
 ## Configuration
 
-To start with, you need to update the `config.h` file with your Wi-Fi
-credential, your aqicn.org Data-Platform token and the station location:
+To start with, you need to update the `config.h` file with your your aqicn.org
+Data-Platform token and the station location:
 
 ```C
 #define TOKEN "dummy-token-for-test-purpose-only"
-
-#define WIFI_SSID "yourNetworkName"
-#define WIFI_PASS "yourNetworkPassword"
 
 #define LATITUDE 48.756080
 #define LONGITUDE 2.302038
 ```
 
 You can get your own token from https://aqicn.org/data-platform/token/
+
+By default, the device will use the (Wi-Fi
+Manager)[https://github.com/tzapu/WiFiManager] to connect to your Wi-Fi access
+point. If you want to configure a static Wi-Fi access point instead, comment out
+`CONF_USE_WIFI_MANAGER` and define `WIFI_SSID` and `WIFI_PASS` in the `config.h`
+file.
+
+```C
+//#define CONF_USE_WIFI_MANAGER
+#define WIFI_SSID "yourNetworkName" 
+#define WIFI_PASS "yourNetworkPassword"
+```
 
 ## Libraries
 
@@ -45,13 +54,20 @@ The firmware uses the following libraries:
 
 ## Compiling
 
+### Arduino
+
 If you use [arduino-cli](https://arduino.github.io/arduino-cli/), you can just
-use `make` to compile, flash and start the console monitor. You will first need
-to configure the `SERIAL = /dev/cu.usbmodem101` in the Makefile.
+use `make compile-arduino` to compile, flash and start the console monitor. You
+will first need to configure the `SERIAL = /dev/cu.usbmodem101` in the Makefile.
 
 If you use
 [vs-code Arduino extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino),
 you can just select `Arduino: Upload` from the command palette.
+
+### Platform IO
+
+If you use platform IO, you can just use `make compile-platformio` to compile,
+upload, and start the monitor.
 
 ## Running
 
@@ -68,5 +84,5 @@ the aqicn.org data-platform.
 - [x] Add support for uploading CO2 sensor temperature and humidity
 - [x] Add support for embedded HTTP server
 - [x] Add support for Wifi Manager
+- [x] Add support for platform IO
 - [ ] Add support for Dual PMS configuration
-- [ ] Add support for platform IO
