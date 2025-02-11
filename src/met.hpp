@@ -40,15 +40,14 @@ void metSensorWorker()
 {
     float t = aht20.getTemperature();
     float h = aht20.getHumidity();
-
-    // Print the results
-    Serial.print("Temperature: ");
-    Serial.print(t, 2);
-    Serial.print(" C\t");
-    Serial.print("Humidity: ");
-    Serial.print(h, 2);
-    Serial.print("% RH");
-    Serial.println();
+    char s[48];
+    snprintf(
+        s,
+        sizeof(s),
+        "AHT20: tmp: %2.2f, hmd: %3.2f %% RH",
+        t,
+        h);
+    Serial.println(s);
 
     temperature.add(t);
     humidity.add(h);

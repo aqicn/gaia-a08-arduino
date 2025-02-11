@@ -129,15 +129,15 @@ void scd4xSensorWorker()
     }
     else
     {
-        Serial.print("Co2:");
-        Serial.print(co2_ppm);
-        Serial.print("\t");
-        Serial.print("Temperature:");
-        Serial.print(temperature);
-        Serial.print("\t");
-        Serial.print("Humidity:");
-        Serial.println(humidity);
-
+        char s[80];
+        snprintf(
+            s,
+            sizeof(s),
+            "SCD4x: tmp: %2.2f, hmd: %2.2f, Co2: %5d",
+            temperature,
+            humidity,
+            co2_ppm);
+        Serial.println(s);
         co2.add(co2_ppm);
     }
 }

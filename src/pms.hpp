@@ -39,16 +39,18 @@ void pmsSensorWorker()
     static PMS::DATA data;
     if (pms.readUntil(data, 100))
     {
-        Serial.print("PM 1.0 (ug/m3): ");
-        Serial.print(data.PM_AE_UG_1_0);
+        char s[64];
+        snprintf(
+            s,
+            sizeof(s),
+            "PMS:   PM1.0: %5d, PM 2.5: %5d, PM10: %5d",
+            data.PM_AE_UG_1_0,
+            data.PM_AE_UG_2_5,
+            data.PM_AE_UG_10_0);
+        Serial.println(s);
+
         pm1.add(data.PM_AE_UG_1_0);
-
-        Serial.print(" - PM 2.5 (ug/m3): ");
-        Serial.print(data.PM_AE_UG_2_5);
         pm25.add(data.PM_AE_UG_2_5);
-
-        Serial.print(" - PM 10.0 (ug/m3): ");
-        Serial.println(data.PM_AE_UG_10_0);
         pm10.add(data.PM_AE_UG_10_0);
     }
 }
