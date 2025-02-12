@@ -16,7 +16,57 @@
  *
  */
 
+#include <WS2812FX.h>
+#include "main.hpp"
+#include "sensors.hpp"
+#include "indicator.hpp"
+
+WS2812FX ws2812fx = WS2812FX(RGB_LED_COUNT, GPIO_RGB_LED, NEO_GRB + NEO_KHZ800);
+
+void rgbLedWorker();
+Task rgbTask(1000, TASK_FOREVER, &rgbLedWorker);
+
 const uint32_t aqi_colors[6] = {0x00ff00, 0xffff00, 0xff8000, 0xff4000, 0xff0000, 0xcc00ff};
+uint32_t pm25_concentration_to_color(float c);
+
+void rgbLedInit(Scheduler &runner)
+{
+    ws2812fx.init();
+    ws2812fx.setBrightness(5);
+    ws2812fx.setSpeed(500);
+    ws2812fx.setMode(FX_MODE_RAINBOW_CYCLE);
+    ws2812fx.start();
+
+    runner.addTask(rgbTask);
+    rgbTask.enable();
+}
+
+// The first 8 seconds, show the rainbow
+int rgb_loop_count = 0;
+
+void rgbLedWorker()
+{
+    if (rgb_loop_count == 8)
+    {
+        ws2812fx.setMode(FX_MODE_STATIC);
+        ws2812fx.setBrightness(0);
+    }
+    else if (rgb_loop_count > 8)
+    {
+        if (pm25.hasData())
+        {
+            uint32_t color = pm25_concentration_to_color(pm25.last());
+            ws2812fx.setBrightness(10);
+            ws2812fx.setColor(color);
+        }
+    }
+    rgb_loop_count++;
+}
+
+void rgbLedLoop()
+{
+    ws2812fx.service();
+}
 
 uint32_t pm25_concentration_to_color(float c)
 {

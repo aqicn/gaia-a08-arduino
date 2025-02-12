@@ -16,6 +16,10 @@
  *
  */
 
+#include "main.hpp"
+#include "config.hpp"
+#include "sensors.hpp"
+
 void uploaderWorker();
 Task uploaderTask(60 * 1000, TASK_FOREVER, &uploaderWorker);
 

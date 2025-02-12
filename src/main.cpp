@@ -16,43 +16,42 @@
  *
  */
 
-#include <TaskScheduler.h>
-#include <TaskSchedulerDeclarations.h>
-#include <TaskSchedulerSleepMethods.h>
-#include <ArduinoJson.h>
-
 // -----------------------
-
-#define RGB_LED_COUNT 1
-#define GPIO_RGB_LED 1
-#define GPIO_GREEN_LED 10
-#define GPIO_5V_PWR_EN 2
-#define GPIO_SDA 8
-#define GPIO_SCL 9
-#define GPIO_PMS1_RX 4
-#define GPIO_PMS2_RX 7
+#include "main.hpp"
 
 #ifdef USBSerial
 #define Serial USBSerial
 #endif
 
 // -----------------------
-
-#include "config.h"
-#include "src/convertion.hpp"
-#include "src/wifi.hpp"
-#include "src/accumulator.hpp"
-#include "src/met.hpp"
-#include "src/pms.hpp"
-#include "src/rgb.hpp"
-#include "src/led.hpp"
-#include "src/scd4x.hpp"
-#include "src/uploader.hpp"
-#include "src/webserver.hpp"
+#include "mongoose.h"
+#include "config.hpp"
+#include "conversion.hpp"
+#include "wifi.hpp"
+#include "accumulator.hpp"
+#include "webserver.hpp"
+#include "sensors.hpp"
+#include "indicator.hpp"
+#include <jled.h>
 
 // -----------------------
 
 Scheduler runner;
+
+auto led = JLed(GPIO_GREEN_LED);
+void ledInit(Scheduler &runner)
+{
+    // To just turn off the Green LED, use:
+    // pinMode(GPIO_GREEN_LED, OUTPUT);
+    // digitalWrite(GPIO_GREEN_LED, LOW);
+    // To make the green LED breathe:
+    led.MaxBrightness(100).Breathe(2000).DelayAfter(1000).Forever();
+}
+
+void ledLoop()
+{
+    led.Update();
+}
 
 void setup()
 {

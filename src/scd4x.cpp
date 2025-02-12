@@ -17,12 +17,13 @@
  */
 
 #include <SensirionI2CScd4x.h>
+#include "main.hpp"
+#include "sensors.hpp"
 
 SensirionI2CScd4x scd4x;
 
 void scd4xSensorWorker();
 Task scd4xTask(1000, TASK_FOREVER, &scd4xSensorWorker);
-Accumulator<int> co2;
 int scd4xErrorCount = 0;
 
 void printUint16Hex(uint16_t value)

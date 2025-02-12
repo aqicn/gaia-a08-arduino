@@ -18,12 +18,13 @@
 
 #include <AHT20.h>
 #include <Wire.h>
+#include "sensors.hpp"
+#include "accumulator.hpp"
+#include "main.hpp"
 
 AHT20 aht20;
 void metSensorWorker();
 Task metTask(5000, TASK_FOREVER, &metSensorWorker);
-
-Accumulator<float> temperature, humidity;
 
 void metSensorInit(Scheduler &runner)
 {
