@@ -12,6 +12,10 @@
 #if MQTT
 #include "mqtt_client.h"
 
+#define FREE(x) \
+    free(x);    \
+    x = NULL;
+
 // MQTT connection info
 extern String MQTTuser;
 extern String MQTTpassword;
@@ -34,8 +38,8 @@ public:
 };
 
 extern MQTTclient_t MQTTclient;
-extern void SetupMQTTClient();
-extern void mqtt_receive_callback(const String topic, const String payload);
+void SetupMQTTClient();
+void mqtt_receive_callback(const String topic, const String payload);
 
 #endif // MQTT
 

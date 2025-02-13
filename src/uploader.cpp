@@ -19,10 +19,76 @@
 #include "main.hpp"
 #include "config.hpp"
 #include "sensors.hpp"
+#include "mongoose.h"
+#include "network.hpp"
+#include <WiFi.h>
+#include "uploader.hpp"
 
 void uploaderWorker();
 Task uploaderTask(60 * 1000, TASK_FOREVER, &uploaderWorker);
 
+static const char *s_url = "https://aqicn.org/sensor/upload/";
+struct mg_str host = mg_url_host(s_url);
+static const char *s_post_data = NULL;     // POST data
+static const uint64_t s_timeout_ms = 1500; // Connect timeout in milliseconds
+
+static void fn(struct mg_connection *c, int ev, void *ev_data)
+{
+    if (ev == MG_EV_OPEN)
+    {
+        // Connection created. Store connect expiration time in c->data
+        *(uint64_t *)c->data = mg_millis() + s_timeout_ms;
+    }
+    else if (ev == MG_EV_POLL)
+    {
+        if (mg_millis() > *(uint64_t *)c->data &&
+            (c->is_connecting || c->is_resolving))
+        {
+            mg_error(c, "Connect timeout");
+        }
+    }
+    else if (ev == MG_EV_CONNECT)
+    {
+        // Connected to server. Extract host name from URL
+        struct mg_str host = mg_url_host(s_url);
+
+        if (mg_url_is_ssl(s_url))
+        {
+            struct mg_tls_opts opts = {.ca = mg_unpacked("/certs/ca.pem"),
+                                       .name = mg_url_host(s_url)};
+            mg_tls_init(c, &opts);
+        }
+
+        // Send request
+        int content_length = s_post_data ? strlen(s_post_data) : 0;
+        mg_printf(c,
+                  "%s %s HTTP/1.0\r\n"
+                  "Host: %.*s\r\n"
+                  "Content-Type: application/json\r\n"
+                  "Content-Length: %d\r\n"
+                  "User-Agent: GAIA-uploader/1.1"
+                  "\r\n",
+                  s_post_data ? "POST" : "GET",
+                  mg_url_uri(s_url),
+                  (int)host.len,
+                  host.buf,
+                  content_length);
+        mg_send(c, s_post_data, content_length);
+    }
+    else if (ev == MG_EV_HTTP_MSG)
+    {
+        // Response is received. Print it
+        struct mg_http_message *hm = (struct mg_http_message *)ev_data;
+        printf("%.*s", (int)hm->message.len, hm->message.buf);
+        c->is_draining = 1;         // Tell mongoose to close this connection
+        *(bool *)c->fn_data = true; // Tell event loop to stop
+    }
+    else if (ev == MG_EV_ERROR)
+    {
+        log_e("Error: %s", (char *)ev_data);
+        *(bool *)c->fn_data = true; // Error, tell event loop to stop
+    }
+}
 void uploaderInit(Scheduler &runner)
 {
     runner.addTask(uploaderTask);
@@ -73,11 +139,12 @@ bool uploaderGetCurrentStatus(JsonDocument &doc)
     if (co2.hasData())
     {
         doc["readings"][4]["specie"] = "co2";
-        doc["readings"][4]["value"] = humidity.avg();
+        doc["readings"][4]["value"] = co2.avg();
         doc["readings"][4]["unit"] = "ppm";
     }
 
     doc["token"] = TOKEN;
+
     return true;
 }
 
@@ -113,27 +180,8 @@ void uploaderWorker()
 
     static char json_body[1024 * 8];
     serializeJson(doc, json_body);
+    s_post_data = json_body;
 
-    HTTPClient http;
-    http.setUserAgent("GAIA-uploader/1.1");
-    // http.begin("https://aqicn.org/sensor/upload");
-    http.begin("http://192.168.1.214:88/sensor/upload");
-    http.addHeader("Content-Type", "application/json");
-    int httpResponseCode = http.POST(json_body);
-
-    if (httpResponseCode > 0)
-    {
-
-        String response = http.getString();
-        Serial.println(httpResponseCode);
-        Serial.println(response);
-    }
-    else
-    {
-
-        Serial.print("Error on sending POST: ");
-        Serial.println(httpResponseCode);
-    }
-
-    http.end();
+    bool done = false;                       // Event handler flips it to true
+    mg_http_connect(&mgr, s_url, fn, &done); // Create client connection
 }

@@ -19,8 +19,9 @@
 #include <AHT20.h>
 #include <Wire.h>
 #include "sensors.hpp"
-#include "accumulator.hpp"
 #include "main.hpp"
+
+Accumulator<float> temperature, humidity;
 
 AHT20 aht20;
 void metSensorWorker();

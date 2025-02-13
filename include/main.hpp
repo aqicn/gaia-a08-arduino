@@ -10,7 +10,7 @@
 #define GPIO_PMS1_RX 4
 #define GPIO_PMS2_RX 7
 
-#define WIFI_MODE 0
+#define WIFI_MODE 1
 
 #include <Arduino.h>
 #include <ArduinoJson.h>

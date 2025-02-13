@@ -5,13 +5,13 @@
 #include "accumulator.hpp"
 
 // Sensor init functions
-void scd4xSensorInit(Scheduler &runner);
-void pmsSensorInit(Scheduler &runner);
-void metSensorInit(Scheduler &runner);
+extern void scd4xSensorInit(Scheduler &runner);
+extern void pmsSensorInit(Scheduler &runner);
+extern void metSensorInit(Scheduler &runner);
 
 // Sensor value accumulators
-Accumulator<int> co2;
-Accumulator<float> temperature, humidity;
-Accumulator<int> pm1, pm25, pm10;
+extern Accumulator<int> co2;
+extern Accumulator<float> temperature, humidity;
+extern Accumulator<int> pm1, pm25, pm10;
 
 #endif // _GAIA_SENSORS

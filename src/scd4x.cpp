@@ -26,6 +26,8 @@ void scd4xSensorWorker();
 Task scd4xTask(1000, TASK_FOREVER, &scd4xSensorWorker);
 int scd4xErrorCount = 0;
 
+Accumulator<int> co2;
+
 void printUint16Hex(uint16_t value)
 {
     Serial.print(value < 4096 ? "0" : "");

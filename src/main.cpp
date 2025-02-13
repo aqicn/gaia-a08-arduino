@@ -26,12 +26,11 @@
 // -----------------------
 #include "mongoose.h"
 #include "config.hpp"
-#include "conversion.hpp"
-#include "wifi.hpp"
 #include "accumulator.hpp"
-#include "webserver.hpp"
 #include "sensors.hpp"
 #include "indicator.hpp"
+#include "network.hpp"
+#include "uploader.hpp"
 #include <jled.h>
 
 // -----------------------
@@ -63,11 +62,7 @@ void setup()
     rgbLedInit(runner);
     ledInit(runner);
     scd4xSensorInit(runner);
-
-    wifiInit(runner);
-
     uploaderInit(runner);
-    webServerInit(runner);
 }
 
 void loop()
@@ -75,4 +70,5 @@ void loop()
     ledLoop();
     rgbLedLoop();
     runner.execute();
+    network_loop();
 }

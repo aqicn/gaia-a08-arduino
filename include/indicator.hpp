@@ -3,6 +3,7 @@
 
 #include <TaskScheduler.h>
 
-void rgbLedInit(Scheduler &runner)
+extern void rgbLedInit(Scheduler &runner);
+extern void rgbLedLoop();
 
 #endif
