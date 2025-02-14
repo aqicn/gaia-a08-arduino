@@ -24,8 +24,7 @@
 #include <WiFi.h>
 #include "uploader.hpp"
 
-void uploaderWorker();
-Task uploaderTask(60 * 1000, TASK_FOREVER, &uploaderWorker);
+void uploaderWorker(void *parameter);
 
 static const char *s_url = "https://aqicn.org/sensor/upload/";
 struct mg_str host = mg_url_host(s_url);
@@ -89,10 +88,17 @@ static void fn(struct mg_connection *c, int ev, void *ev_data)
         *(bool *)c->fn_data = true; // Error, tell event loop to stop
     }
 }
-void uploaderInit(Scheduler &runner)
+void uploaderInit()
 {
-    runner.addTask(uploaderTask);
-    uploaderTask.enable();
+    // Create Task 100ms Timer
+    xTaskCreate(
+        uploaderWorker,   // Function that should be called
+        "uploaderWorker", // Name of the task (for debugging)
+        4608,             // Stack size (bytes)
+        NULL,             // Parameter to pass
+        3,                // Task priority - medium
+        NULL              // Task handle
+    );
 }
 
 bool uploaderGetCurrentStatus(JsonDocument &doc)
@@ -158,7 +164,7 @@ void uploaderResetCurrentStatus()
     co2.reset();
 }
 
-void uploaderWorker()
+void uploaderWorker(void *parameter)
 {
     // Check WiFi connection status
     if (WiFi.status() != WL_CONNECTED)
@@ -184,4 +190,6 @@ void uploaderWorker()
 
     bool done = false;                       // Event handler flips it to true
     mg_http_connect(&mgr, s_url, fn, &done); // Create client connection
+
+    vTaskDelay(60 * (1000 / portTICK_PERIOD_MS)); // Upload data once every 60 seconds
 }

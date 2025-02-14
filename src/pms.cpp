@@ -5,28 +5,38 @@
 
 Accumulator<int> pm1, pm25, pm10;
 
-void pms1SensorWorker();
+void pms1SensorWorker(void *);
 PMS pms1(Serial0);
-Task pms1Task(1000, TASK_FOREVER, &pms1SensorWorker);
 #if NUM_PMS_SENSORS == 2
 PMS pms2(Serial1);
-void pms2SensorWorker();
-Task pms2Task(1000, TASK_FOREVER, &pms2SensorWorker);
+void pms2SensorWorker(void *);
 #endif
 
-void pmsSensorInit(Scheduler &runner)
+void pmsSensorInit()
 {
     pinMode(GPIO_5V_PWR_EN, OUTPUT);
     digitalWrite(GPIO_5V_PWR_EN, HIGH);
 
     Serial0.begin(9600, SERIAL_8N1, GPIO_PMS1_RX, -1);
-    runner.addTask(pms1Task);
-    pms1Task.enable();
+    xTaskCreate(
+        pms1SensorWorker,   // Function that should be called
+        "pms1SensorWorker", // Name of the task (for debugging)
+        2048,               // Stack size (bytes)
+        NULL,               // Parameter to pass
+        3,                  // Task priority - medium
+        NULL                // Task handle
+    );
 
 #if NUM_PMS_SENSORS == 2
     Serial1.begin(9600, SERIAL_8N1, GPIO_PMS2_RX, -1);
-    runner.addTask(pms2Task);
-    pms2Task.enable();
+    xTaskCreate(
+        pms2SensorWorker,   // Function that should be called
+        "pms2SensorWorker", // Name of the task (for debugging)
+        2048,               // Stack size (bytes)
+        NULL,               // Parameter to pass
+        4,                  // Task priority - medium
+        NULL                // Task handle
+    );
 #endif
 }
 
@@ -50,22 +60,30 @@ void processSensorData(int pms_num, PMS::DATA data)
     pm10.add(data.PM_AE_UG_10_0);
 }
 
-void pms1SensorWorker()
+void pms1SensorWorker(void *parameters)
 {
     static PMS::DATA pms1_data;
-    if (pms1.readUntil(pms1_data, 100))
+    while (1)
     {
-        processSensorData(1, pms1_data);
+        if (pms1.readUntil(pms1_data, 100))
+        {
+            processSensorData(1, pms1_data);
+        }
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
 #if NUM_PMS_SENSORS == 2
-void pms2SensorWorker()
+void pms2SensorWorker(void *parameters)
 {
     static PMS::DATA pms2_data;
-    if (pms2.readUntil(pms2_data, 100))
+    while (1)
     {
-        processSensorData(2, pms2_data);
+        if (pms2.readUntil(pms2_data, 100))
+        {
+            processSensorData(2, pms2_data);
+        }
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 #endif

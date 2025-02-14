@@ -22,8 +22,7 @@
 
 SensirionI2CScd4x scd4x;
 
-void scd4xSensorWorker();
-Task scd4xTask(1000, TASK_FOREVER, &scd4xSensorWorker);
+void scd4xSensorWorker(void *parameter);
 int scd4xErrorCount = 0;
 
 Accumulator<int> co2;
@@ -45,7 +44,7 @@ void printSerialNumber(uint16_t serial0, uint16_t serial1, uint16_t serial2)
     Serial.println();
 }
 
-void scd4xSensorInit(Scheduler &runner)
+void scd4xSensorInit()
 {
     // Since we share the I2C interface with the met sensor,
     // make sure this is called after the met sensor init code.
@@ -91,56 +90,69 @@ void scd4xSensorInit(Scheduler &runner)
     }
 
     Serial.println("SCD4x: Waiting for first measurement... (5 sec)");
-    runner.addTask(scd4xTask);
-    scd4xTask.enable();
+
+    xTaskCreate(
+        scd4xSensorWorker,   // Function that should be called
+        "scd4xSensorWorker", // Name of the task (for debugging)
+        4096,                // Stack size (bytes)
+        NULL,                // Parameter to pass
+        3,                   // Task priority - medium
+        NULL                 // Task handle
+    );
 }
 
-void scd4xSensorWorker()
+void scd4xSensorWorker(void *parameter)
 {
-    uint16_t error;
-    char errorMessage[256];
+    while (1)
+    {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    delay(100);
+        uint16_t error;
+        char errorMessage[256];
 
-    // Read Measurement
-    uint16_t co2_ppm = 0;
-    float temperature = 0.0f;
-    float humidity = 0.0f;
-    bool isDataReady = false;
-    error = scd4x.getDataReadyFlag(isDataReady);
-    if (error)
-    {
-        Serial.print("SCD4x: Error trying to execute getDataReadyFlag(): ");
-        errorToString(error, errorMessage, 256);
-        Serial.println(errorMessage);
-        return;
-    }
-    if (!isDataReady)
-    {
-        return;
-    }
-    error = scd4x.readMeasurement(co2_ppm, temperature, humidity);
-    if (error)
-    {
-        Serial.print("SCD4x: Error trying to execute readMeasurement(): ");
-        errorToString(error, errorMessage, 256);
-        Serial.println(errorMessage);
-    }
-    else if (co2_ppm == 0)
-    {
-        Serial.println("SCD4x: Invalid sample detected, skipping.");
-    }
-    else
-    {
-        char s[80];
-        snprintf(
-            s,
-            sizeof(s),
-            "SCD4x: tmp: %2.2f, hmd: %2.2f, Co2: %5d",
-            temperature,
-            humidity,
-            co2_ppm);
-        Serial.println(s);
-        co2.add(co2_ppm);
-    }
+        delay(100);
+
+        // Read Measurement
+        uint16_t co2_ppm = 0;
+        float temperature = 0.0f;
+        float humidity = 0.0f;
+        bool isDataReady = false;
+        error = scd4x.getDataReadyFlag(isDataReady);
+        if (error)
+        {
+            Serial.print("SCD4x: Error trying to execute getDataReadyFlag(): ");
+            errorToString(error, errorMessage, 256);
+            Serial.println(errorMessage);
+            continue;
+        }
+        if (!isDataReady)
+        {
+            continue;
+        }
+        error = scd4x.readMeasurement(co2_ppm, temperature, humidity);
+        if (error)
+        {
+            Serial.print("SCD4x: Error trying to execute readMeasurement(): ");
+            errorToString(error, errorMessage, 256);
+            Serial.println(errorMessage);
+        }
+        else if (co2_ppm == 0)
+        {
+            Serial.println("SCD4x: Invalid sample detected, skipping.");
+        }
+        else
+        {
+            char s[80];
+            snprintf(
+                s,
+                sizeof(s),
+                "SCD4x: tmp: %2.2f, hmd: %2.2f, Co2: %5d",
+                temperature,
+                humidity,
+                co2_ppm);
+            Serial.println(s);
+            co2.add(co2_ppm);
+        }
+
+    } // while(1)
 }

@@ -33,6 +33,7 @@ uint8_t lastMqttUpdate = 0;
 uint8_t WIFImode = WIFI_MODE; // WiFi Mode (0:Disabled / 1:Enabled / 2:Start Portal)
 
 #if MQTT
+MQTTclient_t MQTTclient;
 
 void SetupMQTTClient()
 {
@@ -41,6 +42,14 @@ void SetupMQTTClient()
     MQTTclient.publish(MQTTprefix + "/connected", "online", true, 0);
 }
 
+void MQTTclient_t::publish(const String &topic, const String &payload, bool retained, int qos)
+{
+    if (connected)
+    {
+        esp_mqtt_client_enqueue(client, topic.c_str(), payload.c_str(), payload.length(), qos, retained, 1);
+        // esp_mqtt_client_publish(client, topic.c_str(), payload.c_str(), payload.length(), qos, retained);
+    }
+}
 /*
  * @brief Event handler registered to receive MQTT events
  *

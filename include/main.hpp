@@ -14,8 +14,5 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <TaskScheduler.h>
-#include <TaskSchedulerDeclarations.h>
-#include <TaskSchedulerSleepMethods.h>
 
 #endif // _GAIA_MAIN

@@ -35,21 +35,32 @@
 
 // -----------------------
 
-Scheduler runner;
-
 auto led = JLed(GPIO_GREEN_LED);
-void ledInit(Scheduler &runner)
+void ledLoop(void *parameter)
+{
+    while (1)
+    {
+        led.Update();
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
+void ledInit()
 {
     // To just turn off the Green LED, use:
     // pinMode(GPIO_GREEN_LED, OUTPUT);
     // digitalWrite(GPIO_GREEN_LED, LOW);
     // To make the green LED breathe:
     led.MaxBrightness(100).Breathe(2000).DelayAfter(1000).Forever();
-}
 
-void ledLoop()
-{
-    led.Update();
+    xTaskCreate(
+        ledLoop,   // Function that should be called
+        "ledLoop", // Name of the task (for debugging)
+        1024,      // Stack size (bytes)
+        NULL,      // Parameter to pass
+        3,         // Task priority - medium
+        NULL       // Task handle
+    );
 }
 
 void setup()
@@ -57,18 +68,16 @@ void setup()
     Serial.begin(115200);
     Serial.println("starting...");
 
-    metSensorInit(runner);
-    pmsSensorInit(runner);
-    rgbLedInit(runner);
-    ledInit(runner);
-    scd4xSensorInit(runner);
-    uploaderInit(runner);
+    metSensorInit();
+    pmsSensorInit();
+    rgbLedInit();
+    ledInit();
+    scd4xSensorInit();
+    // uploaderInit();
 }
 
 void loop()
 {
-    ledLoop();
     rgbLedLoop();
-    runner.execute();
     network_loop();
 }

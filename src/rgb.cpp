@@ -23,13 +23,20 @@
 
 WS2812FX ws2812fx = WS2812FX(RGB_LED_COUNT, GPIO_RGB_LED, NEO_GRB + NEO_KHZ800);
 
-void rgbLedWorker();
-Task rgbTask(1000, TASK_FOREVER, &rgbLedWorker);
+void rgbLedWorker(void *parameter);
 
-const uint32_t aqi_colors[6] = {0x00ff00, 0xffff00, 0xff8000, 0xff4000, 0xff0000, 0xcc00ff};
+const uint32_t aqi_colors[6] = {
+    0x00ff00, // Green
+    0xffff00, // Yellow
+    0xff8000, // Orange
+    0xff4000, // Dark orange
+    0xff0000, // Red
+    0xcc00ff  // Purple
+};
+
 uint32_t pm25_concentration_to_color(float c);
 
-void rgbLedInit(Scheduler &runner)
+void rgbLedInit()
 {
     ws2812fx.init();
     ws2812fx.setBrightness(5);
@@ -37,48 +44,62 @@ void rgbLedInit(Scheduler &runner)
     ws2812fx.setMode(FX_MODE_RAINBOW_CYCLE);
     ws2812fx.start();
 
-    runner.addTask(rgbTask);
-    rgbTask.enable();
+    xTaskCreate(
+        rgbLedWorker,   // Function that should be called
+        "rgbLedWorker", // Name of the task (for debugging)
+        2048,           // Stack size (bytes)
+        NULL,           // Parameter to pass
+        3,              // Task priority - medium
+        NULL            // Task handle
+    );
 }
 
 // The first 8 seconds, show the rainbow
 int rgb_loop_count = 0;
-
-void rgbLedWorker()
-{
-    if (rgb_loop_count == 8)
-    {
-        ws2812fx.setMode(FX_MODE_STATIC);
-        ws2812fx.setBrightness(0);
-    }
-    else if (rgb_loop_count > 8)
-    {
-        if (pm25.hasData())
-        {
-            uint32_t color = pm25_concentration_to_color(pm25.last());
-            ws2812fx.setBrightness(10);
-            ws2812fx.setColor(color);
-        }
-    }
-    rgb_loop_count++;
-}
 
 void rgbLedLoop()
 {
     ws2812fx.service();
 }
 
+void rgbLedWorker(void *parameter)
+{
+    while (1)
+    {
+        if (rgb_loop_count == 8)
+        {
+            ws2812fx.setMode(FX_MODE_STATIC);
+            ws2812fx.setBrightness(0);
+        }
+        else if (rgb_loop_count > 8)
+        {
+            if (pm25.hasData())
+            {
+                uint32_t color = pm25_concentration_to_color(pm25.last());
+                ws2812fx.setBrightness(10);
+                ws2812fx.setColor(color);
+            }
+        }
+        rgb_loop_count++;
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
 uint32_t pm25_concentration_to_color(float c)
 {
-    if (c >= 0 && c < 12.1)
+    switch (static_cast<int>(c))
+    {
+    case 0 ... 12:
         return aqi_colors[0];
-    if (c >= 12.1 && c < 35.5)
+    case 13 ... 35:
         return aqi_colors[1];
-    if (c >= 35.5 && c < 55.5)
+    case 36 ... 55:
         return aqi_colors[2];
-    if (c >= 55.5 && c < 150.5)
+    case 56 ... 150:
         return aqi_colors[3];
-    if (c >= 150.5 && c < 250.5)
+    case 151 ... 250:
         return aqi_colors[4];
-    return aqi_colors[5];
+    default:
+        return aqi_colors[5];
+    }
 }
