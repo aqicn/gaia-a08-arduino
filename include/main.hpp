@@ -14,5 +14,6 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "config.hpp"
 
 #endif // _GAIA_MAIN

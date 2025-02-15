@@ -42,7 +42,7 @@ void pmsSensorInit()
 
 void processSensorData(int pms_num, PMS::DATA data)
 {
-
+#if SERIAL_VALUES
     char s[64];
     snprintf(
         s,
@@ -54,6 +54,7 @@ void processSensorData(int pms_num, PMS::DATA data)
         data.PM_AE_UG_10_0);
 
     Serial.println(s);
+#endif
 
     pm1.add(data.PM_AE_UG_1_0);
     pm25.add(data.PM_AE_UG_2_5);
@@ -79,11 +80,12 @@ void pms2SensorWorker(void *parameters)
     static PMS::DATA pms2_data;
     while (1)
     {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+
         if (pms2.readUntil(pms2_data, 100))
         {
             processSensorData(2, pms2_data);
         }
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 #endif

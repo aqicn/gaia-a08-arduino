@@ -20,7 +20,7 @@
 CONF_USE_WIFI_MANAGER: If defined, the device will use the WiFi manager
 to configure the connection to the WiFi access point.
 */
-#define CONF_USE_WIFI_MANAGER
+// #define CONF_USE_WIFI_MANAGER
 
 /*
 CONF_USE_WEB_SERVER: If defined, the device will expose an HTTP
@@ -29,13 +29,16 @@ server from which one can get the real-time data.
 // #define CONF_USE_WEB_SERVER
 
 // Get your own token from  https://aqicn.org/data-platform/token/
-#define TOKEN "dummy-token-for-test-purpose-only"
+#define TOKEN "f092d2fe515e64a6e6f0add6dbbb364ff61903d0"
 
-#define LATITUDE 28.7501
-#define LONGITUDE 77.1177
+#define LATITUDE 51.8715557
+#define LONGITUDE 5.2784883
 
 #ifndef CONF_USE_WIFI_MANAGER
 // Only needed if the WiFi manager is not used
-#define WIFI_SSID "yourNetworkName"
-#define WIFI_PASS "yourNetworkPassword"
+#define WIFI_SSID "Lisro_IOT"
+#define WIFI_PASS "Lisro@Home"
+#define MQTT 0 // Comment or set to 0 to disable MQTT support in code
+
+#define NUM_PMS_SENSORS 2
 #endif

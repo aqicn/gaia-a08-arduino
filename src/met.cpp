@@ -37,7 +37,7 @@ void metSensorInit()
     xTaskCreate(
         metSensorWorker,   // Function that should be called
         "metSensorWorker", // Name of the task (for debugging)
-        4608,              // Stack size (bytes)
+        2048,              // Stack size (bytes)
         NULL,              // Parameter to pass
         3,                 // Task priority - medium
         NULL               // Task handle
@@ -48,8 +48,10 @@ void metSensorWorker(void *parameter)
 {
     while (1)
     {
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         float t = aht20.getTemperature();
         float h = aht20.getHumidity();
+#if SERIAL_VALUES
         char s[48];
         snprintf(
             s,
@@ -58,9 +60,8 @@ void metSensorWorker(void *parameter)
             t,
             h);
         Serial.println(s);
-
+#endif
         temperature.add(t);
         humidity.add(h);
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
     }
 }

@@ -3,5 +3,6 @@
 
 extern void rgbLedInit();
 extern void rgbLedLoop();
+extern void ledInit();
 
 #endif

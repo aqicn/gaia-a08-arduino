@@ -17,6 +17,7 @@
  */
 
 #include <WS2812FX.h>
+#include <jled.h>
 #include "main.hpp"
 #include "sensors.hpp"
 #include "indicator.hpp"
@@ -54,6 +55,34 @@ void rgbLedInit()
     );
 }
 
+auto led = JLed(GPIO_GREEN_LED);
+void ledLoop(void *parameter)
+{
+    while (1)
+    {
+        led.Update();
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
+void ledInit()
+{
+    // To just turn off the Green LED, use:
+    // pinMode(GPIO_GREEN_LED, OUTPUT);
+    // digitalWrite(GPIO_GREEN_LED, LOW);
+    // To make the green LED breathe:
+    led.MaxBrightness(100).Breathe(2000).DelayAfter(1000).Forever();
+
+    xTaskCreate(
+        ledLoop,   // Function that should be called
+        "ledLoop", // Name of the task (for debugging)
+        1024,      // Stack size (bytes)
+        NULL,      // Parameter to pass
+        3,         // Task priority - medium
+        NULL       // Task handle
+    );
+}
+
 // The first 8 seconds, show the rainbow
 int rgb_loop_count = 0;
 
@@ -66,6 +95,8 @@ void rgbLedWorker(void *parameter)
 {
     while (1)
     {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+
         if (rgb_loop_count == 8)
         {
             ws2812fx.setMode(FX_MODE_STATIC);
@@ -81,7 +112,6 @@ void rgbLedWorker(void *parameter)
             }
         }
         rgb_loop_count++;
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 

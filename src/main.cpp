@@ -24,44 +24,14 @@
 #endif
 
 // -----------------------
-#include "mongoose.h"
 #include "config.hpp"
 #include "accumulator.hpp"
 #include "sensors.hpp"
 #include "indicator.hpp"
 #include "network.hpp"
 #include "uploader.hpp"
-#include <jled.h>
 
 // -----------------------
-
-auto led = JLed(GPIO_GREEN_LED);
-void ledLoop(void *parameter)
-{
-    while (1)
-    {
-        led.Update();
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-}
-
-void ledInit()
-{
-    // To just turn off the Green LED, use:
-    // pinMode(GPIO_GREEN_LED, OUTPUT);
-    // digitalWrite(GPIO_GREEN_LED, LOW);
-    // To make the green LED breathe:
-    led.MaxBrightness(100).Breathe(2000).DelayAfter(1000).Forever();
-
-    xTaskCreate(
-        ledLoop,   // Function that should be called
-        "ledLoop", // Name of the task (for debugging)
-        1024,      // Stack size (bytes)
-        NULL,      // Parameter to pass
-        3,         // Task priority - medium
-        NULL       // Task handle
-    );
-}
 
 void setup()
 {
@@ -73,11 +43,13 @@ void setup()
     rgbLedInit();
     ledInit();
     scd4xSensorInit();
-    // uploaderInit();
+    uploaderInit();
+
+    wifiInit();
+    webServerInit();
 }
 
 void loop()
 {
     rgbLedLoop();
-    network_loop();
 }

@@ -142,6 +142,8 @@ void scd4xSensorWorker(void *parameter)
         }
         else
         {
+#if SERIAL_VALUES
+
             char s[80];
             snprintf(
                 s,
@@ -151,6 +153,7 @@ void scd4xSensorWorker(void *parameter)
                 humidity,
                 co2_ppm);
             Serial.println(s);
+#endif
             co2.add(co2_ppm);
         }
 
