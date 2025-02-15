@@ -42,7 +42,7 @@ void pmsSensorInit()
 
 void processSensorData(int pms_num, PMS::DATA data)
 {
-#if SERIAL_VALUES
+#ifdef DEBUG_SENSOR_VALUES
     char s[64];
     snprintf(
         s,

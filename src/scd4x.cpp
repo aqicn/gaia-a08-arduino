@@ -85,7 +85,7 @@ void scd4xSensorWorker(void *parameter)
         }
         else
         {
-#if SERIAL_VALUES
+#ifdef DEBUG_SENSOR_VALUES
 
             char s[80];
             snprintf(

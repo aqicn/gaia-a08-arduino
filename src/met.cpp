@@ -51,7 +51,7 @@ void metSensorWorker(void *parameter)
         vTaskDelay(5000 / portTICK_PERIOD_MS);
         float t = aht20.getTemperature();
         float h = aht20.getHumidity();
-#if SERIAL_VALUES
+#ifdef DEBUG_SENSOR_VALUES
         char s[48];
         snprintf(
             s,
