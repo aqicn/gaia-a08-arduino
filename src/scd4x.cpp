@@ -44,63 +44,6 @@ void printSerialNumber(uint16_t serial0, uint16_t serial1, uint16_t serial2)
     Serial.println();
 }
 
-void scd4xSensorInit()
-{
-    // Since we share the I2C interface with the met sensor,
-    // make sure this is called after the met sensor init code.
-    scd4x.begin(Wire);
-
-    uint16_t error;
-    char errorMessage[256];
-    error = scd4x.stopPeriodicMeasurement();
-    if (error)
-    {
-        if (++scd4xErrorCount <= 3)
-        {
-            Serial.print("SCD4x: Error trying to execute stopPeriodicMeasurement(): ");
-            errorToString(error, errorMessage, 256);
-            Serial.println(errorMessage);
-        }
-        return;
-    }
-    scd4xErrorCount = 0;
-
-    uint16_t serial0;
-    uint16_t serial1;
-    uint16_t serial2;
-    error = scd4x.getSerialNumber(serial0, serial1, serial2);
-    if (error)
-    {
-        Serial.print("SCD4x: Error trying to execute getSerialNumber(): ");
-        errorToString(error, errorMessage, 256);
-        Serial.println(errorMessage);
-    }
-    else
-    {
-        printSerialNumber(serial0, serial1, serial2);
-    }
-
-    // Start Measurement
-    error = scd4x.startPeriodicMeasurement();
-    if (error)
-    {
-        Serial.print("SCD4x: Error trying to execute startPeriodicMeasurement(): ");
-        errorToString(error, errorMessage, 256);
-        Serial.println(errorMessage);
-    }
-
-    Serial.println("SCD4x: Waiting for first measurement... (5 sec)");
-
-    xTaskCreate(
-        scd4xSensorWorker,   // Function that should be called
-        "scd4xSensorWorker", // Name of the task (for debugging)
-        4096,                // Stack size (bytes)
-        NULL,                // Parameter to pass
-        3,                   // Task priority - medium
-        NULL                 // Task handle
-    );
-}
-
 void scd4xSensorWorker(void *parameter)
 {
     while (1)
@@ -158,4 +101,60 @@ void scd4xSensorWorker(void *parameter)
         }
 
     } // while(1)
+}
+
+void scd4xSensorInit()
+{
+    InitializeI2C();
+    scd4x.begin(Wire);
+
+    uint16_t error;
+    char errorMessage[256];
+    error = scd4x.stopPeriodicMeasurement();
+    if (error)
+    {
+        if (++scd4xErrorCount <= 3)
+        {
+            Serial.print("SCD4x: Error trying to execute stopPeriodicMeasurement(): ");
+            errorToString(error, errorMessage, 256);
+            Serial.println(errorMessage);
+        }
+        return;
+    }
+    scd4xErrorCount = 0;
+
+    uint16_t serial0;
+    uint16_t serial1;
+    uint16_t serial2;
+    error = scd4x.getSerialNumber(serial0, serial1, serial2);
+    if (error)
+    {
+        Serial.print("SCD4x: Error trying to execute getSerialNumber(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    }
+    else
+    {
+        printSerialNumber(serial0, serial1, serial2);
+    }
+
+    // Start Measurement
+    error = scd4x.startPeriodicMeasurement();
+    if (error)
+    {
+        Serial.print("SCD4x: Error trying to execute startPeriodicMeasurement(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    }
+
+    Serial.println("SCD4x: Waiting for first measurement... (5 sec)");
+
+    xTaskCreate(
+        scd4xSensorWorker,   // Function that should be called
+        "scd4xSensorWorker", // Name of the task (for debugging)
+        4096,                // Stack size (bytes)
+        NULL,                // Parameter to pass
+        3,                   // Task priority - medium
+        NULL                 // Task handle
+    );
 }

@@ -1,5 +1,43 @@
 #include "sensors.hpp"
 #include "main.hpp"
+#include <Wire.h>
+
+bool i2c_initialized = false;
+
+void InitializeI2C()
+{
+    if (i2c_initialized)
+    {
+        return;
+    }
+
+    Wire.begin(GPIO_SDA, GPIO_SCL);
+}
+
+bool getMinimalSensorData(JsonDocument &doc)
+{
+    if (!pm25.hasData())
+    {
+        return false;
+    }
+
+    doc["station"]["id"] = stationID;
+    doc["station"]["mac"] = mac;
+
+    doc["station"]["location"]["latitude"] = LATITUDE;
+    doc["station"]["location"]["longitude"] = LONGITUDE;
+    doc["readings"]["pm1"] = pm1.avg();
+    doc["readings"]["pm25"] = pm25.avg();
+    doc["readings"]["pm10"] = pm10.avg();
+    doc["readings"]["temperature"] = temperature.avg();
+    doc["readings"]["humidity"] = humidity.avg();
+
+    if (co2.hasData())
+    {
+        doc["readings"]["co2"] = round(co2.avg());
+    }
+    return true;
+}
 
 bool getSerialisedSensorData(JsonDocument &doc)
 {
@@ -7,14 +45,6 @@ bool getSerialisedSensorData(JsonDocument &doc)
     {
         return false;
     }
-    uint64_t efuseMac = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length: 6 bytes).
-    static char mac[32];
-    snprintf(mac, 32, "%llx", efuseMac);
-
-    static char stationID[32];
-    uint16_t chip = (uint16_t)(efuseMac >> 32);
-    snprintf(stationID, 32, "GAIA-A08-%x", chip);
-    Serial.printf("device ID is '%s'\n", stationID);
 
     doc["station"]["id"] = stationID;
     doc["station"]["mac"] = mac;

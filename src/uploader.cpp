@@ -21,18 +21,30 @@
 #include "main.hpp"
 #include <HTTPClient.h>
 
-void uploaderWorker(void *params);
-
-void uploaderInit()
+void UploadDataToAQIC(unsigned char *json_body, size_t request_len)
 {
-    xTaskCreate(
-        uploaderWorker,      // Function that should be called
-        "scd4xSensorWorker", // Name of the task (for debugging)
-        4096,                // Stack size (bytes)
-        NULL,                // Parameter to pass
-        3,                   // Task priority - medium
-        NULL                 // Task handle
-    );
+    HTTPClient http;
+    http.setUserAgent("GAIA-uploader/1.1");
+    // http.begin("https://aqicn.org/sensor/upload");
+    http.begin("http://192.168.1.214:88/sensor/upload");
+    http.addHeader("Content-Type", "application/json");
+    int httpResponseCode = http.POST(json_body, request_len);
+
+    if (httpResponseCode > 0)
+    {
+
+        String response = http.getString();
+        Serial.println(httpResponseCode);
+        Serial.println(response);
+    }
+    else
+    {
+
+        Serial.print("Error on sending POST: ");
+        Serial.println(httpResponseCode);
+    }
+
+    http.end();
 }
 
 void uploaderResetCurrentStatus()
@@ -64,34 +76,23 @@ void uploaderWorker(void *params)
         }
         uploaderResetCurrentStatus();
 
-        Serial.print("Posting: ");
-        serializeJson(doc, Serial);
-        Serial.println("");
-
-        static char json_body[1024 * 8];
+        size_t json_len = measureJson(doc);
+        static unsigned char json_body[512]; // expected json len is 422
         serializeJson(doc, json_body);
 
-        HTTPClient http;
-        http.setUserAgent("GAIA-uploader/1.1");
-        http.begin("https://aqicn.org/sensor/upload");
-        // http.begin("http://192.168.1.214:88/sensor/upload");
-        http.addHeader("Content-Type", "application/json");
-        int httpResponseCode = http.POST(json_body);
-
-        if (httpResponseCode > 0)
-        {
-
-            String response = http.getString();
-            Serial.println(httpResponseCode);
-            Serial.println(response);
-        }
-        else
-        {
-
-            Serial.print("Error on sending POST: ");
-            Serial.println(httpResponseCode);
-        }
-
-        http.end();
+        Serial.printf("Posting: %s with len %d \n", json_body, json_len);
+        UploadDataToAQIC(json_body, json_len);
     }
+}
+
+void uploaderInit()
+{
+    xTaskCreate(
+        uploaderWorker,   // Function that should be called
+        "uploaderWorker", // Name of the task (for debugging)
+        4096,             // Stack size (bytes)
+        NULL,             // Parameter to pass
+        3,                // Task priority - medium
+        NULL              // Task handle
+    );
 }

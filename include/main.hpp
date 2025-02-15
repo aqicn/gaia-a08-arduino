@@ -16,4 +16,7 @@
 #include <ArduinoJson.h>
 #include "config.hpp"
 
+extern char stationID[32];
+extern char mac[32];
+
 #endif // _GAIA_MAIN

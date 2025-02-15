@@ -1,9 +1,10 @@
-
-#ifdef CONF_USE_WEB_SERVER
+#include "config.hpp"
 #include <WiFi.h>
 #include "network.hpp"
 #include "sensors.hpp"
 #include <ESPAsyncWebServer.h>
+
+#ifdef CONF_USE_WEB_SERVER
 
 AsyncWebServer server(80);
 
@@ -16,13 +17,13 @@ void webServerRealtimeHandler(AsyncWebServerRequest *request)
         return;
     }
 
-    if (!getSerialisedSensorData(doc))
+    if (!getMinimalSensorData(doc))
     {
         request->send(200, "application/json", "{\"status\":\"error\"}");
         return;
     }
 
-    static char json_body[1024 * 8];
+    static char json_body[1024];
     serializeJson(doc, json_body);
     request->send(200, "application/json", json_body);
 }
@@ -31,7 +32,6 @@ void webServerInit()
 {
 
     server.on("/realtime", HTTP_GET, webServerRealtimeHandler);
-
     server.begin();
 }
 

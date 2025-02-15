@@ -32,11 +32,26 @@
 #include "uploader.hpp"
 
 // -----------------------
+char stationID[32];
+char mac[32];
+
+void getStationId()
+{
+    uint64_t efuseMac = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length: 6 bytes).
+    snprintf(mac, 32, "%llx", efuseMac);
+    uint16_t chip = (uint16_t)(efuseMac >> 32);
+    snprintf(stationID, 32, "GAIA-A08-%x", chip);
+    Serial.printf("device ID is '%s'\n", stationID);
+}
 
 void setup()
 {
     Serial.begin(115200);
     Serial.println("starting...");
+
+    log_w("LOG_LOCAL_LEVEL %d\n", LOG_LOCAL_LEVEL);
+
+    getStationId();
 
     metSensorInit();
     pmsSensorInit();
@@ -46,7 +61,12 @@ void setup()
     uploaderInit();
 
     wifiInit();
+#ifdef MQTT
+    mqttInit();
+#endif
+#ifdef CONF_USE_WEB_SERVER
     webServerInit();
+#endif
 }
 
 void loop()

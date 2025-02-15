@@ -7,4 +7,8 @@
 void wifiInit();
 void webServerInit();
 
+#ifdef MQTT
+void mqttInit();
+#endif
+
 #endif // _GAIA_NETWORK

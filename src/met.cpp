@@ -28,7 +28,7 @@ void metSensorWorker(void *parameter);
 
 void metSensorInit()
 {
-    Wire.begin(GPIO_SDA, GPIO_SCL);
+    InitializeI2C();
     if (aht20.begin() == false)
     {
         Serial.println("AHT20 not detected. Please check wiring. Freezing.");
