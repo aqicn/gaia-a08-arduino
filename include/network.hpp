@@ -7,7 +7,7 @@
 void wifiInit();
 void webServerInit();
 
-#ifdef MQTT
+#ifdef CONF_MQTT
 void mqttInit();
 #endif
 

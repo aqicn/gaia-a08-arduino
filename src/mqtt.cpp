@@ -19,7 +19,7 @@
 #include "sensors.hpp"
 #include "main.hpp"
 
-#ifdef MQTT
+#ifdef CONF_MQTT
 
 extern "C"
 {

@@ -59,7 +59,7 @@ void setup()
     uploaderInit();
 
     wifiInit();
-#ifdef MQTT
+#ifdef CONF_MQTT
     mqttInit();
 #endif
 #ifdef CONF_USE_WEB_SERVER
