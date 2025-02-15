@@ -49,8 +49,6 @@ void setup()
     Serial.begin(115200);
     Serial.println("starting...");
 
-    log_w("LOG_LOCAL_LEVEL %d\n", LOG_LOCAL_LEVEL);
-
     getStationId();
 
     metSensorInit();

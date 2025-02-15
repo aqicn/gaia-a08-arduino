@@ -16,15 +16,15 @@
  *
  */
 
-#include <WiFi.h>
 #include "sensors.hpp"
 #include "main.hpp"
 
 #ifdef MQTT
-#include <HTTPClient.h>
 
 extern "C"
 {
+#include <WiFi.h>
+#include <HTTPClient.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "mqtt_client.h"
