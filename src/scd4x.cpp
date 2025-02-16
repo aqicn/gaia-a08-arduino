@@ -109,7 +109,7 @@ void scd4xSensorInit()
     scd4x.begin(Wire);
 
     uint16_t error;
-    char errorMessage[256];
+    static char errorMessage[256];
     error = scd4x.stopPeriodicMeasurement();
     if (error)
     {

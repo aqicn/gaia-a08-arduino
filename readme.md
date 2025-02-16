@@ -49,7 +49,7 @@ The firmware uses the following libraries:
 | Wire                | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire             |
 | Sensirion I2C SCD4x | 0.4.0   | /Arduino/libraries/Sensirion_I2C_SCD4x                                             |
 | Sensirion Core      | 0.6.0   | /Arduino/libraries/Sensirion_Core                                                  |
-| ESPAsyncWebServer   | 3.6.0   | /Arduino/libraries/ESPAsyncWebServer                                               
+| ESPAsyncWebServer   | 3.7.0   | /Arduino/libraries/ESPAsyncWebServer                                               
 | FS                  | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/FS               |
 | AsyncTCP            | 1.1.4   | /Arduino/libraries/AsyncTCP                                                        |
 

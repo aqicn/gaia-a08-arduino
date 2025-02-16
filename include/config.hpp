@@ -26,7 +26,7 @@ to configure the connection to the WiFi access point.
 CONF_USE_WEB_SERVER: If defined, the device will expose an HTTP
 server from which one can get the real-time data.
 */
-// #define CONF_USE_WEB_SERVER
+#define CONF_USE_WEB_SERVER
 
 // Get your own token from  https://aqicn.org/data-platform/token/
 #define TOKEN "dummy-token-for-test-purpose-only"

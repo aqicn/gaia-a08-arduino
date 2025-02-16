@@ -23,8 +23,8 @@ void webServerRealtimeHandler(AsyncWebServerRequest *request)
         return;
     }
 
-    static char json_body[1024];
-    serializeJson(doc, json_body);
+    static char json_body[512];
+    serializeJson(doc, json_body, sizeof(json_body));
     request->send(200, "application/json", json_body);
 }
 

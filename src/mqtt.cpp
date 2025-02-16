@@ -21,14 +21,11 @@
 
 #ifdef CONF_MQTT
 
-extern "C"
-{
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "mqtt_client.h"
-}
 
 esp_mqtt_client_handle_t client;
 
@@ -71,7 +68,7 @@ void mqttWorker(void *params)
         }
         size_t json_len = measureJson(doc);
         static unsigned char json_body[256]; // expected json len is 225 bytes
-        serializeJson(doc, json_body);
+        serializeJson(doc, json_body, sizeof(json_body));
 
         // Serial.printf("Posting: %s with len %d \n", json_body, json_len);
 
