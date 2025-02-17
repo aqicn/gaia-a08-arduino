@@ -43,14 +43,13 @@ The firmware uses the following libraries:
 | WS2812FX            | 1.4.2   | /Arduino/libraries/WS2812FX                                                        |
 | ArduinoJson         | 6.21.3  | /Arduino/libraries/ArduinoJson                                                     |
 | PMS Library         | 1.1.0   | /Arduino/libraries/PMS_Library                                                     |
-| TaskScheduler       | 3.7.0   | /Arduino/libraries/TaskScheduler                                                   |
 | WiFi                | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/WiFi             |
 | HTTPClient          | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/HTTPClient       |
 | WiFiClientSecure    | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/WiFiClientSecure |
 | Wire                | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire             |
 | Sensirion I2C SCD4x | 0.4.0   | /Arduino/libraries/Sensirion_I2C_SCD4x                                             |
 | Sensirion Core      | 0.6.0   | /Arduino/libraries/Sensirion_Core                                                  |
-| ESPAsyncWebServer   | 3.1.0   | /Arduino/libraries/ESPAsyncWebServer                                               |
+| ESPAsyncWebServer   | 3.7.0   | /Arduino/libraries/ESPAsyncWebServer                                               
 | FS                  | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/FS               |
 | AsyncTCP            | 1.1.4   | /Arduino/libraries/AsyncTCP                                                        |
 

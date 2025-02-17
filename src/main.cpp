@@ -16,64 +16,58 @@
  *
  */
 
-#include <TaskScheduler.h>
-#include <TaskSchedulerDeclarations.h>
-#include <TaskSchedulerSleepMethods.h>
-#include <ArduinoJson.h>
-
 // -----------------------
-
-#define RGB_LED_COUNT 1
-#define GPIO_RGB_LED 1
-#define GPIO_GREEN_LED 10
-#define GPIO_5V_PWR_EN 2
-#define GPIO_SDA 8
-#define GPIO_SCL 9
-#define GPIO_PMS1_RX 4
-#define GPIO_PMS2_RX 7
+#include "main.hpp"
 
 #ifdef USBSerial
 #define Serial USBSerial
 #endif
 
 // -----------------------
-
-#include "config.h"
-#include "src/convertion.hpp"
-#include "src/wifi.hpp"
-#include "src/accumulator.hpp"
-#include "src/met.hpp"
-#include "src/pms.hpp"
-#include "src/rgb.hpp"
-#include "src/led.hpp"
-#include "src/scd4x.hpp"
-#include "src/uploader.hpp"
-#include "src/webserver.hpp"
+#include "config.hpp"
+#include "accumulator.hpp"
+#include "sensors.hpp"
+#include "indicator.hpp"
+#include "network.hpp"
+#include "uploader.hpp"
 
 // -----------------------
+char stationID[32];
+char mac[32];
 
-Scheduler runner;
+void getStationId()
+{
+    uint64_t efuseMac = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length: 6 bytes).
+    snprintf(mac, 32, "%llx", efuseMac);
+    uint16_t chip = (uint16_t)(efuseMac >> 32);
+    snprintf(stationID, 32, "GAIA-A08-%x", chip);
+    Serial.printf("device ID is '%s'\n", stationID);
+}
 
 void setup()
 {
     Serial.begin(115200);
     Serial.println("starting...");
 
-    metSensorInit(runner);
-    pmsSensorInit(runner);
-    rgbLedInit(runner);
-    ledInit(runner);
-    scd4xSensorInit(runner);
+    getStationId();
 
-    wifiInit(runner);
+    metSensorInit();
+    pmsSensorInit();
+    rgbLedInit();
+    ledInit();
+    scd4xSensorInit();
+    uploaderInit();
 
-    uploaderInit(runner);
-    webServerInit(runner);
+    wifiInit();
+#ifdef CONF_MQTT
+    mqttInit();
+#endif
+#ifdef CONF_USE_WEB_SERVER
+    webServerInit();
+#endif
 }
 
 void loop()
 {
-    ledLoop();
     rgbLedLoop();
-    runner.execute();
 }

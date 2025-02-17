@@ -18,38 +18,50 @@
 
 #include <AHT20.h>
 #include <Wire.h>
-
-AHT20 aht20;
-void metSensorWorker();
-Task metTask(5000, TASK_FOREVER, &metSensorWorker);
+#include "sensors.hpp"
+#include "main.hpp"
 
 Accumulator<float> temperature, humidity;
 
-void metSensorInit(Scheduler &runner)
+AHT20 aht20;
+void metSensorWorker(void *parameter);
+
+void metSensorInit()
 {
-    Wire.begin(GPIO_SDA, GPIO_SCL);
+    InitializeI2C();
     if (aht20.begin() == false)
     {
         Serial.println("AHT20 not detected. Please check wiring. Freezing.");
     }
-    runner.addTask(metTask);
-    metTask.enable();
+
+    xTaskCreate(
+        metSensorWorker,   // Function that should be called
+        "metSensorWorker", // Name of the task (for debugging)
+        2048,              // Stack size (bytes)
+        NULL,              // Parameter to pass
+        3,                 // Task priority - medium
+        NULL               // Task handle
+    );
 }
 
-void metSensorWorker()
+void metSensorWorker(void *parameter)
 {
-    float t = aht20.getTemperature();
-    float h = aht20.getHumidity();
-
-    // Print the results
-    Serial.print("Temperature: ");
-    Serial.print(t, 2);
-    Serial.print(" C\t");
-    Serial.print("Humidity: ");
-    Serial.print(h, 2);
-    Serial.print("% RH");
-    Serial.println();
-
-    temperature.add(t);
-    humidity.add(h);
+    while (1)
+    {
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        float t = aht20.getTemperature();
+        float h = aht20.getHumidity();
+#ifdef DEBUG_SENSOR_VALUES
+        char s[48];
+        snprintf(
+            s,
+            sizeof(s),
+            "AHT20: tmp: %2.2f, hmd: %3.2f %% RH",
+            t,
+            h);
+        Serial.println(s);
+#endif
+        temperature.add(t);
+        humidity.add(h);
+    }
 }
