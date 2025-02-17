@@ -1,14 +1,10 @@
 
 SERIAL = /dev/cu.usbmodem101
-FQBN = esp32:esp32:esp32c3:CDCOnBoot=cdc
 
-all: compile-arduino
-
+all: compile-platformio
 
 compile-arduino:
-	arduino-cli compile --fqbn $(FQBN)
-	arduino-cli upload -p $(SERIAL) --fqbn $(FQBN)
-	python -m serial.tools.miniterm $(SERIAL) 115200
+	@echo "Arduino compilation is not supported on this branch. Check the readme for more information"
 
 compile-platformio:
 	pio run -t upload --upload-port $(SERIAL)

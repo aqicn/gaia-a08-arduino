@@ -3,8 +3,6 @@
 This repository is the open-source Arduino firmware used for the
 [GAIA A08](https://aqicn.org/gaia/a08/).
 
-[![Arduino-CLI CI](https://github.com/aqicn/gaia-a08-arduino/actions/workflows/compile-arduino.yml/badge.svg)](https://github.com/aqicn/gaia-a08-arduino/actions/workflows/compile-arduino.yml)
-
 [![PlatformIO CI](https://github.com/aqicn/gaia-a08-arduino/actions/workflows/compile-platformio.yml/badge.svg)](https://github.com/aqicn/gaia-a08-arduino/actions/workflows/compile-platformio.yml)
 
 ## Configuration
@@ -37,39 +35,30 @@ the `config.h` file.
 
 The firmware uses the following libraries:
 
-| Used library        | Version | Path                                                                               |
-| ------------------- | ------- | ---------------------------------------------------------------------------------- |
-| AHT20               | 1.0.1   | /Arduino/libraries/AHT20                                                           |
-| WS2812FX            | 1.4.2   | /Arduino/libraries/WS2812FX                                                        |
-| ArduinoJson         | 6.21.3  | /Arduino/libraries/ArduinoJson                                                     |
-| PMS Library         | 1.1.0   | /Arduino/libraries/PMS_Library                                                     |
-| WiFi                | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/WiFi             |
-| HTTPClient          | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/HTTPClient       |
-| WiFiClientSecure    | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/WiFiClientSecure |
-| Wire                | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire             |
-| Sensirion I2C SCD4x | 0.4.0   | /Arduino/libraries/Sensirion_I2C_SCD4x                                             |
-| Sensirion Core      | 0.6.0   | /Arduino/libraries/Sensirion_Core                                                  |
-| ESPAsyncWebServer   | 3.7.0   | /Arduino/libraries/ESPAsyncWebServer                                               
-| FS                  | 2.0.0   | /Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/FS               |
-| AsyncTCP            | 1.1.4   | /Arduino/libraries/AsyncTCP                                                        |
+| Used library                     | Version | Comment                   |
+| -------------------------------- | ------- | ------------------------- |
+| fu-hsi/PMS Library               | ^1.1.0  | PMS5003 driver            |
+| sensirion/Sensirion I2C SCD4x    | ^0.4.0  | CO2 sensor driver         |
+| jandelgado/JLed                  | ^4.13.1 | RGB Led effects           |
+| bblanchon/ArduinoJson            | ^7.1.0  |                           |
+| dvarrel/AHT20                    | ^1.0.0  | Temperature sensor driver |
+| kitesurfer1404/WS2812FX          | ^1.4.4  | RGB Led driver            |
+| ESP32Async/ESPAsyncWebServer     | ^3.7.0  |                           |
+| github.com/tzapu/WiFiManager.git | 2.0.17  |                           |
 
-## Compiling
-
-### Arduino
-
-If you use [arduino-cli](https://arduino.github.io/arduino-cli/), you can just
-use `make compile-arduino` to compile, flash and start the console monitor. You
-will first need to configure the `SERIAL = /dev/cu.usbmodem101` in the Makefile.
-
-If you use
-[vs-code Arduino extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino),
-you can just select `Arduino: Upload` from the command palette.
+## Compilation
 
 ### Platform IO
 
 If you use platform IO, you can just use `make compile-platformio` to compile,
 upload, and start the monitor. Note that, by default, the `CONF_USE_WEB_SERVER`
 configuration flag is enabled by default for Platform IO.
+
+### Arduino CLI/IDE
+
+This branch does not support Arduino IDE and Arduinno CLI. If you need to
+compilation using the Arduino tools, use the `arduino` branch:
+https://github.com/aqicn/gaia-a08-arduino/tree/arduino
 
 ## Running
 
