@@ -50,5 +50,8 @@ server from which one can get the real-time data.
 #define MQTT_PASSWORD ""
 #endif
 
+// Set to 2 if you have two PMS sensors connected
+#define NUM_PMS_SENSORS 1
+
 // Comment to disable printing of debug values to the serial console
 #define DEBUG_SENSOR_VALUES

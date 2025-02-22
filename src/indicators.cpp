@@ -84,7 +84,7 @@ void ledInit()
 }
 
 // The first 8 seconds, show the rainbow
-int rgb_loop_count = 0;
+bool rgb_is_rainbow_mode = true;
 
 void rgbLedLoop()
 {
@@ -93,6 +93,8 @@ void rgbLedLoop()
 
 void rgbLedWorker(void *parameter)
 {
+    int rgb_loop_count = 0;
+
     while (1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
@@ -101,18 +103,25 @@ void rgbLedWorker(void *parameter)
         {
             ws2812fx.setMode(FX_MODE_STATIC);
             ws2812fx.setBrightness(0);
+            ws2812fx.setColor(0);
+            break;
         }
-        else if (rgb_loop_count > 8)
-        {
-            if (pm25.hasData())
-            {
-                uint32_t color = pm25_concentration_to_color(pm25.last());
-                ws2812fx.setBrightness(10);
-                ws2812fx.setColor(color);
-            }
-        }
+
         rgb_loop_count++;
     }
+    rgb_is_rainbow_mode = false;
+    vTaskDelete(NULL);
+}
+
+void indicatorReportPm25(float pm25)
+{
+    if (rgb_is_rainbow_mode)
+    {
+        return;
+    }
+    uint32_t color = pm25_concentration_to_color(pm25);
+    ws2812fx.setBrightness(10);
+    ws2812fx.setColor(color);
 }
 
 uint32_t pm25_concentration_to_color(float c)
