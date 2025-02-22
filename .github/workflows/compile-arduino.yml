@@ -30,5 +30,6 @@ jobs:
             - name: PMS Library
             - name: TaskScheduler
             - name: jled
-            - name: "Sensirion I2C SCD4x"
+            - name: Sensirion Core
+            - name: Sensirion I2C SCD4x
             - name: WiFiManager
