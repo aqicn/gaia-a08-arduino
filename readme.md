@@ -68,6 +68,20 @@ from https://aqicn.org/data-feed/verification/.
 To see you station, you first need to enter the token you previously got from
 the aqicn.org data-platform.
 
+## Gaia A08 - HW GPIO mapping
+
+![GAIA A08 GPIO mapping](doc/gaia-a08-gpio.png "GAIA A08 GPIO")
+
+```C
+#define GPIO_RGB_LED 1
+#define GPIO_GREEN_LED 10
+#define GPIO_5V_PWR_EN 2
+#define GPIO_SDA 8
+#define GPIO_SCL 9
+#define GPIO_PMS1_RX 4
+#define GPIO_PMS2_RX 7
+```
+
 ## Todo
 
 - [x] Add support for green LED breathing
