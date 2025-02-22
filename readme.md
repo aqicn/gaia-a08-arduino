@@ -87,6 +87,12 @@ the aqicn.org data-platform.
 #define GPIO_GREEN_LED  10
 ```
 
+## FAQ
+
+- After flashing my custom firmware to the GAIA A08, can I revert back to stock
+  firmware? Yes, you can flash back the stock firmware from this page:
+  https://firmware.aqicn.org/gaia/updater/#/en/a08
+
 ## Todo
 
 - [x] Add support for green LED breathing
@@ -96,3 +102,4 @@ the aqicn.org data-platform.
 - [x] Add support for Wifi Manager
 - [x] Add support for platform IO
 - [ ] Add support for Dual PMS configuration
+- [ ] Add support for customizable PMS active duty cycle
