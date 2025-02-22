@@ -30,6 +30,6 @@ jobs:
             - name: PMS Library
             - name: TaskScheduler
             - name: jled
-            - name: Sensirion Core
-            - name: Sensirion I2C SCD4x
             - name: WiFiManager
+            - source-url: https://github.com/Sensirion/arduino-core.git
+            - source-url: https://github.com/Sensirion/arduino-i2c-scd4x.git
