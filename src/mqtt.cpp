@@ -88,9 +88,28 @@ void mqttInit()
         .password = MQTT_PASSWORD,
     };
 
+    if (strlen(mqtt_cfg.uri) == 0)
+    {
+        Serial.println("Can not start the MQTT client: MQTT_BROKER_URI is not defined");
+        return;
+    }
+
+    esp_err_t err;
     client = esp_mqtt_client_init(&mqtt_cfg);
+    if (client == nullptr)
+    {
+        Serial.println("Failed to create MQTT client");
+        return;
+    }
+
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
-    esp_mqtt_client_start(client);
+    err = esp_mqtt_client_start(client);
+    if (err != ESP_OK)
+    {
+        Serial.println("Failed to start the MQTT client");
+        return;
+    }
+
     xTaskCreate(
         mqttWorker,   // Function that should be called
         "mqttWorker", // Name of the task (for debugging)
