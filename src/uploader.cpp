@@ -90,7 +90,7 @@ void uploaderInit()
     xTaskCreate(
         uploaderWorker,   // Function that should be called
         "uploaderWorker", // Name of the task (for debugging)
-        4096,             // Stack size (bytes)
+        8192,             // Stack size (bytes)
         NULL,             // Parameter to pass
         3,                // Task priority - medium
         NULL              // Task handle
